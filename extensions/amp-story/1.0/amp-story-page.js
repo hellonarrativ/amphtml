@@ -592,7 +592,11 @@ export class AmpStoryPage extends AMP.BaseElement {
       distance = Math.min(distance, 2);
     }
 
+    const isActivePage = distance === 0;
     this.element.setAttribute('distance', distance);
+    this.element.setAttribute('aria-hidden', !isActivePage);
+    this.element.setAttribute('tabindex', isActivePage ? 0 : -1);
+
     this.registerAllMedia_();
     if (distance > 0 && distance <= 2) {
       this.preloadAllMedia_();
