@@ -400,6 +400,36 @@ describes.fakeWin('amp-smartlinks',
 
           expect(editPayload).to.deep.equal(expectedPayload);
         });
+
+        it('Should format edit URLs correctly', () => {
+          const linkmateOptions = {
+            exclusiveLinks: false,
+            publisherID: 999,
+            linkAttribute: 'href',
+          };
+          linkmate = new Linkmate(
+              env.ampdoc,
+              xhr,
+              linkmateOptions,
+          );
+          const envRoot = env.ampdoc.getRootNode();
+          envRoot.title = 'Fake Website Title';
+
+          env.sandbox
+              .stub(env.ampdoc, 'getUrl')
+              .returns('https://www-example-com.cdn.ampproject.org/v/s/' +
+                'www.example.com/example/best-example');
+          env.sandbox.spy(linkmate, 'getEditInfo_');
+
+          const expectedPayload = {
+            'name': 'Fake Website Title',
+            'url': 'www.example.com/example/best-example',
+          };
+
+          const editPayload = linkmate.getEditInfo_();
+
+          expect(editPayload).to.deep.equal(expectedPayload);
+        });
       });
 
       describe('mapLinks_', () => {

@@ -164,10 +164,32 @@ export class Linkmate {
    * @private
    */
   getEditInfo_() {
+    const currentUrl = this.extractBaseUrl_(this.ampDoc_.getUrl());
+
     return dict({
       'name': this.rootNode_.title || null,
-      'url': this.ampDoc_.getUrl(),
+      'url': currentUrl,
     });
+  }
+
+  /**
+   * Truncates AMP URLs to extract the base url for Narrativ Edit Tracking
+   * Purposes
+   * @param {?string} currentUrl The current URL of the AMP page
+   * @return {?string}
+   * @private
+   */
+  extractBaseUrl_(currentUrl) {
+    const splitPath = currentUrl.split('/');
+    let startIndex = 0;
+    while (startIndex < splitPath.length) {
+      if (splitPath[startIndex].startsWith('www.') ||
+        splitPath[startIndex].endsWith('.com')) {
+        return splitPath.slice(startIndex).join('/');
+      }
+      startIndex++;
+    }
+    return currentUrl;
   }
 
   /**
