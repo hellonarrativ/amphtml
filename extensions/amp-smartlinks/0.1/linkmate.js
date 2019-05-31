@@ -163,7 +163,10 @@ export class Linkmate {
    * @private
    */
   getEditInfo_() {
-    const currentUrl = this.extractBaseUrl_(this.ampDoc_.getUrl());
+    let currentUrl = this.ampDoc_.getUrl();
+    if (currentUrl.includes('www-')) {
+      currentUrl = this.extractBaseUrl_(currentUrl);
+    }
 
     return dict({
       'name': this.rootNode_.title || null,
@@ -179,16 +182,9 @@ export class Linkmate {
    * @private
    */
   extractBaseUrl_(currentUrl) {
-    const splitPath = currentUrl.split('/');
-    let startIndex = 0;
-    while (startIndex < splitPath.length) {
-      if (splitPath[startIndex].startsWith('www.') ||
-        splitPath[startIndex].endsWith('.com')) {
-        return splitPath.slice(startIndex).join('/');
-      }
-      startIndex++;
-    }
-    return currentUrl;
+    const protocol = currentUrl.split('://')[0];
+    const url = '://www.'.concat(currentUrl.split('www.')[1]);
+    return protocol.concat(url);
   }
 
   /**
