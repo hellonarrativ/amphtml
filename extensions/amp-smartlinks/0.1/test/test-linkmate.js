@@ -402,8 +402,8 @@ describes.fakeWin(
         envRoot.title = 'Fake Website Title';
 
         env.sandbox
-            .stub(env.ampdoc, 'getUrl')
-            .returns('http://fakewebsite.example/');
+          .stub(env.ampdoc, 'getUrl')
+          .returns('http://fakewebsite.example/');
         env.sandbox.spy(linkmate, 'getEditInfo_');
 
         const expectedPayload = {
@@ -446,6 +446,28 @@ describes.fakeWin(
         expect(editPayload).to.deep.equal(expectedPayload);
       });
     });
+
+    describe('mapLinks_', () => {
+      let anchorList;
+
+      beforeEach(() => {
+        const linkmateOptions = {
+          exclusiveLinks: false,
+          publisherID: 999,
+          linkAttribute: 'href',
+        };
+        linkmate = new Linkmate(env.ampdoc, xhr, linkmateOptions);
+
+        anchorList = [
+          {attributeName: 'href', link: 'http://fakelink.example/'},
+          {attributeName: 'href', link: 'http://fakelink2.example/'},
+          {attributeName: 'href', link: 'http://fakelink2.example/'},
+          {
+            attributeName: 'href',
+            link: 'https://examplelocklink.example/#locklink',
+          },
+        ].map(helpers.createAnchor);
+      });
 
       it('Should map API response to anchorList', () => {
         env.sandbox.spy(linkmate, 'mapLinks_');
@@ -563,5 +585,6 @@ describes.fakeWin(
 
         expect(actualMapping).to.deep.equal(expectedMapping);
       });
+    });
   }
 );
