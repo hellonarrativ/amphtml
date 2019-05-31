@@ -32,6 +32,7 @@
   */
   "asset_globs": [
     "examples/visual-tests/**",
+    "examples/inabox-tag-integration.js"
   ],
 
   /**
@@ -601,6 +602,8 @@
       "interactive_tests": "examples/visual-tests/amp-story/amp-story-tooltip-desktop.js"
     },
     {
+      // TODO(#22070): Re-enable test.
+      "flaky": true,
       "url": "examples/visual-tests/amp-story/amp-story-pagination-buttons.html",
       "name": "amp-story: pagination-buttons desktop",
       "viewport": {"width": 1440, "height": 900},
@@ -610,6 +613,8 @@
       "interactive_tests": "examples/visual-tests/amp-story/amp-story-pagination-buttons.js"
     },
     {
+      // TODO(#22499): Re-enable this test once the animations run.
+      "flaky": true,
       "url": "examples/visual-tests/amp-story/amp-story-sidebar.html",
       "name": "amp-story: sidebar",
       "viewport": {"width": 1440, "height": 900},
@@ -669,6 +674,8 @@
       "interactive_tests": "examples/visual-tests/amp-form/amp-form.js",
     },
     {
+      "flaky": true,
+      // TODO(#22162, cvializ): see https://percy.io/ampproject/amphtml/builds/1828636
       "url": "examples/visual-tests/amp-accordion/amp-accordion.html",
       "name": "amp-accordion: page loads",
       "loading_complete_delay_ms": 1000,
@@ -682,6 +689,24 @@
         "amp-user-notification.amp-active",
       ],
       "interactive_tests": "examples/visual-tests/amp-user-notification/amp-user-notification.js"
+    },
+    {
+      "url": "examples/visual-tests/amp-autocomplete/amp-autocomplete.amp.html",
+      "name": "amp-autocomplete",
+      "interactive_tests": "examples/visual-tests/amp-autocomplete/amp-autocomplete.js",
+    },
+    {
+      "url": "examples/visual-tests/amp-ad/amp-ad.html",
+      "name": "AMP ad",
+      "interactive_tests": "examples/visual-tests/amp-ad/amp-ad.js"
+    },
+    {
+      "url": "examples/visual-tests/amp-ad/amp-inabox.html",
+      "name": "AMP Inabox ad",
+      "loading_complete_selectors": [
+        ".view", ".activeview"
+      ],
+      "interactive_tests": "examples/visual-tests/amp-ad/amp-inabox.js"
     }
   ]
 }

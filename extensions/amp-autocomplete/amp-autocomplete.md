@@ -1,7 +1,8 @@
 ---
-$category: misc
-formats: websites
-teaser: 
+$category: dynamic-content
+formats:
+ - websites
+teaser:
   text: Suggests completed results corresponding to the user input as they type into the input field.
 ---
 <!--
@@ -51,16 +52,12 @@ limitations under the License.
 
 The `amp-autocomplete` extension should be used for suggesting completed items based on user input to help users carry out their task more quickly.
 
-The request is always made from the client, even if the document was served from the AMP Cache. Loading is triggered using normal AMP rules depending on how far the element is from the current viewport.
-
-Filtered results will not be displayed until user focuses on the input field or begins typing into it. Leaving the viewport hides the filtered results.
-
-By default, `<amp-autocomplete>` adds a `list` ARIA role to the filtered results element and a `listitem` role to item elements rendered via the template.
+This can be used to power search experiences, in cases where the user may not know the full range of potential inputs, or in forms to help ensure inputs where there may be multiple ways to express the same intent (using a state abbreviation instead of its full name, for example) yield more predictable results.
 
 Example:
 ```html
   <amp-autocomplete filter="substring" id="myAutocomplete">
-    <input type="text">
+    <input>
     <script type="application/json">
       { "items": ["a", "b", "c"] }
     </script>
@@ -99,7 +96,7 @@ Example:
   <tr>
     <td width="40%"><strong>max-entries [optional]</strong></td>
     <td>
-      The max specified number of items to suggest at once based on a user input, displays all if unspecified 
+      The max specified number of items to suggest at once based on a user input, displays all if unspecified
     </td>
   </tr>
   <tr>
@@ -115,6 +112,11 @@ Example:
       The user flow is as follows: If <code>submit-on-enter</code> is <code>true</code>, pressing <code>Enter</code> will select any currently active item and engage in default behavior, including submitting the form if applicable. If <code>submit-on-enter</code> is <code>false</code>, pressing <code>Enter</code> <em>while suggestions are displaying</em> will select any currently active item only and prevent any other default behavior. If suggestions are not displaying, autocomplete allows default behavior. <strong>Defaults to false.</strong>
     </td>
   </tr>
+  <tr>
+    <td width="40%"><strong>highlight-user-entry [optional]</strong></td>
+    <td>If present, exposes the <code>autocomplete-partial</code> class on the substring within the suggested item that resulted in its match with the user input. This can be used to stylize the corresponding match to stand out to the user. <strong>Defaults to false.</strong>
+    </td>
+  </tr>
 </table>
 
 ## Events
@@ -127,7 +129,7 @@ Read more about [AMP Actions and Events](../../spec/amp-actions-and-events.md).
 <table>
   <tr>
     <td width="40%"><strong>select</strong></td>
-    <td><code>amp-autocomplete</code> triggers the <code>select</code> event when the user selects an option via click, tap, keyboard navigation or accepting typeahead.
+    <td><code>amp-autocomplete</code> triggers the <code>select</code> event when the user selects an option via click, tap, keyboard navigation or accepting typeahead. It also fires the <code>select</code> event if a user keyboard navigates to an item and Tabs away from the input field.
     <code>event</code> contains the <code>value</code> attribute value of the selected element.</td>
   </tr>
 
