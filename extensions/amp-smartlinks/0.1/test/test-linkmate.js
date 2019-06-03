@@ -437,6 +437,53 @@ describes.fakeWin(
         };
         expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
       });
+
+      it('Should not change correctly formatted edit URLs', () => {
+        const linkmateOptions = {
+          exclusiveLinks: false,
+          publisherID: 999,
+          linkAttribute: 'href',
+        };
+        linkmate = new Linkmate(env.ampdoc, xhr, linkmateOptions);
+        const envRoot = env.ampdoc.getRootNode();
+        envRoot.title = 'Fake Website Title';
+
+        env.sandbox
+          .stub(env.ampdoc, 'getUrl')
+          .returns('http://www.example.com/example/best-example');
+        env.sandbox.spy(linkmate, 'getEditInfo_');
+
+        const expectedPayload = {
+          'name': 'Fake Website Title',
+          'url': 'http://www.example.com/example/best-example',
+        };
+        expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
+      });
+
+      it('Should correctly format URLs without www.', () => {
+        const linkmateOptions = {
+          exclusiveLinks: false,
+          publisherID: 999,
+          linkAttribute: 'href',
+        };
+        linkmate = new Linkmate(env.ampdoc, xhr, linkmateOptions);
+        const envRoot = env.ampdoc.getRootNode();
+        envRoot.title = 'Fake Website Title';
+
+        env.sandbox
+          .stub(env.ampdoc, 'getUrl')
+          .returns(
+            'https://example-com.cdn.ampproject.org/v/s/' +
+              'example.com/example/best-example'
+          );
+        env.sandbox.spy(linkmate, 'getEditInfo_');
+
+        const expectedPayload = {
+          'name': 'Fake Website Title',
+          'url': 'https://example.com/example/best-example',
+        };
+        expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
+      });
     });
 
     describe('mapLinks_', () => {

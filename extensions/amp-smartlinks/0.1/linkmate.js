@@ -164,7 +164,8 @@ export class Linkmate {
    */
   getEditInfo_() {
     let currentUrl = this.ampDoc_.getUrl();
-    if (currentUrl.includes('www-')) {
+    const urlRegex = new RegExp('^https?://.*((?!-com).)*\\.com.*$');
+    if (currentUrl.match(urlRegex)) {
       currentUrl = this.extractBaseUrl_(currentUrl);
     }
 
@@ -182,8 +183,17 @@ export class Linkmate {
    * @private
    */
   extractBaseUrl_(currentUrl) {
-    const protocol = currentUrl.split('://')[0];
-    const url = '://www.'.concat(currentUrl.split('www.')[1]);
+    const protocol = currentUrl.split('://')[0].concat('://');
+    const comSplit = currentUrl.split('.com');
+    let url = '';
+    // Some URLs don't have www., we need to work backwards from .com
+    let index = comSplit[0].length - 1;
+    while (comSplit[0].charAt(index) !== '/') {
+      url = comSplit[0].charAt(index).concat(url);
+      index--;
+    }
+    url = url.concat('.com' + comSplit[1]);
+    // Prepend protocol
     return protocol.concat(url);
   }
 
