@@ -165,10 +165,15 @@ export class Linkmate {
   getEditInfo_() {
     let currentUrl = this.ampDoc_.getUrl();
     const urlRegex = new RegExp('^https?://.*((?!-com).)*\\.com.*$');
+    const canonicalLinks = this.rootNode_.querySelectorAll('[rel="canonical"]');
     if (currentUrl.match(urlRegex)) {
-      currentUrl = this.extractBaseUrl_(currentUrl);
+      // If the page has a canonical link, use it
+      if (canonicalLinks && canonicalLinks.length !== 0) {
+        currentUrl = canonicalLinks[0].href;
+      } else {
+        currentUrl = this.extractBaseUrl_(currentUrl);
+      }
     }
-
     return dict({
       'name': this.rootNode_.title || null,
       'url': currentUrl,

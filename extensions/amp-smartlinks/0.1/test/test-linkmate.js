@@ -40,6 +40,22 @@ const helpersFactory = env => {
 
       return anchor;
     },
+    removeCanonicalLink() {
+      win.document.head.removeChild(
+        win.document.head.getElementsByTagName('link')[0]
+      );
+    },
+    createCanonicalLink() {
+      const canonicalLink = win.document.createElement('link');
+      canonicalLink.rel = 'canonical';
+      canonicalLink.href = 'http://localhost:9876/context.html';
+      win.document.head.insertBefore(
+        canonicalLink,
+        win.document.head.firstChild
+      );
+
+      return canonicalLink;
+    },
   };
 };
 
@@ -422,6 +438,7 @@ describes.fakeWin(
         linkmate = new Linkmate(env.ampdoc, xhr, linkmateOptions);
         const envRoot = env.ampdoc.getRootNode();
         envRoot.title = 'Fake Website Title';
+        helpers.removeCanonicalLink();
 
         env.sandbox
           .stub(env.ampdoc, 'getUrl')
@@ -436,6 +453,7 @@ describes.fakeWin(
           'url': 'https://www.example.com/example/best-example',
         };
         expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
+        helpers.createCanonicalLink();
       });
 
       it('Should not change correctly formatted edit URLs', () => {
@@ -447,6 +465,7 @@ describes.fakeWin(
         linkmate = new Linkmate(env.ampdoc, xhr, linkmateOptions);
         const envRoot = env.ampdoc.getRootNode();
         envRoot.title = 'Fake Website Title';
+        helpers.removeCanonicalLink();
 
         env.sandbox
           .stub(env.ampdoc, 'getUrl')
@@ -458,9 +477,37 @@ describes.fakeWin(
           'url': 'http://www.example.com/example/best-example',
         };
         expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
+        helpers.createCanonicalLink();
       });
 
       it('Should correctly format URLs without www.', () => {
+        const linkmateOptions = {
+          exclusiveLinks: false,
+          publisherID: 999,
+          linkAttribute: 'href',
+        };
+        linkmate = new Linkmate(env.ampdoc, xhr, linkmateOptions);
+        const envRoot = env.ampdoc.getRootNode();
+        envRoot.title = 'Fake Website Title';
+        helpers.removeCanonicalLink();
+
+        env.sandbox
+          .stub(env.ampdoc, 'getUrl')
+          .returns(
+            'https://example-com.cdn.ampproject.org/v/s/' +
+              'example.com/example/best-example'
+          );
+        env.sandbox.spy(linkmate, 'getEditInfo_');
+
+        const expectedPayload = {
+          'name': 'Fake Website Title',
+          'url': 'https://example.com/example/best-example',
+        };
+        expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
+        helpers.createCanonicalLink();
+      });
+
+      it('Should correctly format canonical URLs', () => {
         const linkmateOptions = {
           exclusiveLinks: false,
           publisherID: 999,
@@ -480,7 +527,7 @@ describes.fakeWin(
 
         const expectedPayload = {
           'name': 'Fake Website Title',
-          'url': 'https://example.com/example/best-example',
+          'url': 'http://localhost:9876/context.html',
         };
         expect(linkmate.getEditInfo_()).to.deep.equal(expectedPayload);
       });
